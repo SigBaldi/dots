@@ -13,21 +13,21 @@ A streamlined CLI tool for managing dotfiles and configurations with Git integra
 - macOS (primary platform)
 - Zsh shell
 - Git
-- vim (or your preferred editor, mine is Neovim)
+- vim (or your preferred editor)
 - tree (or eza for enhanced directory views)
 
 ## Configuration
 The tool uses XDG-style configuration paths for consistency with Linux:
 - `$XDG_DATA_HOME`: Base directory for your dotfiles repository.
 - `$XDG_CONFIG_HOME`: System config directory (typically ~/.config on Linux), but  on macOS it's typically unset.
-- `$EDITOR`: Your preferred text editor (defaults to vim)
+- `$EDITOR`: Your preferred text editor (defaults to vim).
 
 These paths can be customized by setting the environment variables before running dots.
 
 On macOS, add these to your .zshrc:
 ```bash
 export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/[your dotfiles directory]"
+export XDG_DATA_HOME="$HOME/[your local dotfiles repository]"
 export EDITOR="vim"  # optional: set your preferred editor
 ```
 
@@ -38,7 +38,7 @@ export EDITOR="vim"  # optional: set your preferred editor
 ## Installation
 From source:
 ```bash
-git clone https://github.com/yourusername/dots
+git clone https://github.com/SigBaldi/dots
 cd dots
 make install
 ```
@@ -58,3 +58,13 @@ dots help            Show this help message
 ```
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request.
+
+## License
+
+MIT License
+
+## Support
+If you find this tool useful:
+- 🍺 As per [Beerware](https://en.wikipedia.org/wiki/Beerware) - if we meet, you owe me a beer!
+- ☕ Keep me coding with caffeine at [Buy Me a Coffee](https://buymeacoffee.com/sigbaldi)
+
