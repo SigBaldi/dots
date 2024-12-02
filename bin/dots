@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Global config paths
-export DOTS_BASE_DIR="$XDG_DATA_HOME" # Now set as my local repository of sig.baldi/dotfilesAndConfigs
+export DOTS_BASE_DIR="$XDG_DATA_HOME" # Now set as my local repository of dotfiles and configs
 export DOTS_CONFIG_DIR="$XDG_CONFIG_HOME" # In MacOS, this is not a conventional path, but "~/.config" it's used for consistency with other platforms (e.g., Linux) as a standard.
 show_help() {
     cat << EOF
@@ -31,16 +31,16 @@ target=$2
 
 case $command in
     "list")
-        source list
+        source "/usr/local/share/dots/src/list"
         ;;
     "edit")
-        source edit "$target"
+        source "/usr/local/share/dots/src/edit" "$target"
         ;;
     "deploy")
-        source update "$target"
+        source "/usr/local/share/dots/src/deploy" "$target"
         ;;
     "sync")
-        source manage "$target"
+        source "/usr/local/share/dots/src/sync" "$target"
         ;;
     "help"|"--help"|"-h")
         show_help
