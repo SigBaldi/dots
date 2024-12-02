@@ -2,12 +2,10 @@ class Dots < Formula
   desc "Dotfiles management tool with version control integration"
   homepage "https://github.com/SigBaldi/dots"
   url "https://github.com/SigBaldi/dots/archive/v0.1.0.tar.gz"
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+  sha256 "82fbd13f929f78ca2fb84043474d64ccf4a26e36cd736ded4099a95883af03b9"
   license "MIT"
 
   depends_on "git"
-  depends_on "neovim"
-  depends_on "eza"
   depends_on :macos
   uses_from_macos "zsh"
 
