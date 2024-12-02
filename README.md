@@ -1,4 +1,4 @@
-# dots
+# dots [![Release](https://github.com/SigBaldi/dots/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/SigBaldi/dots/actions/workflows/release.yml)
 
 A streamlined CLI tool for managing dotfiles and configurations with Git integration.
 
