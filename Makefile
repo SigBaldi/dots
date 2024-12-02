@@ -1,15 +1,28 @@
-PREFIX ?= /usr/local
+# Define PREFIX and HOMEBREW_CELLAR
+PREFIX ?= $(shell brew --prefix)
+HOMEBREW_CELLAR := $(shell brew --cellar)/dots
+
 MANPREFIX ?= $(PREFIX)/share/man
-SCRIPTSDIR ?= $(PREFIX)/share/dots/src
+SCRIPTSDIR ?= $(HOMEBREW_CELLAR)/src
 
 install:
+	# Create necessary directories
 	install -d $(PREFIX)/bin
 	install -d $(SCRIPTSDIR)
-	install -m755 bin/dots $(PREFIX)/bin/
-	install -m755 src/*.zsh $(SCRIPTSDIR)/
 	install -d $(MANPREFIX)/man1
-	install -m644 man/dots.1 $(MANPREFIX)/man1/
 	install -d $(PREFIX)/share/zsh/site-functions
+
+	# Replace placeholder in 'dots' script and install
+	sed 's|@SCRIPTSDIR@|$(SCRIPTSDIR)|g' bin/dots > $(PREFIX)/bin/dots
+	chmod 755 $(PREFIX)/bin/dots
+
+	# Install the scripts from src/
+	install -m755 src/* $(SCRIPTSDIR)/
+
+	# Install the man page
+	install -m644 man/dots.1 $(MANPREFIX)/man1/
+
+	# Install zsh completions
 	install -m644 completions/_dots $(PREFIX)/share/zsh/site-functions/
 
 uninstall:

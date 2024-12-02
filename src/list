@@ -19,4 +19,5 @@ list_configs() {
     find "$DOTS_BASE_DIR" -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -exec basename {} \;
 }
 
+source "/usr/local/share/dots/src/list"
 list_configs

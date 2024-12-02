@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Global config paths
-export DOTS_BASE_DIR="$XDG_DATA_HOME" # Now set as my local repository of dotfiles and configs
+export DOTS_BASE_DIR="$XDG_DATA_HOME" # Set as local repository of dotfiles and configs
 export DOTS_CONFIG_DIR="$XDG_CONFIG_HOME" # In MacOS, this is not a conventional path, but "~/.config" it's used for consistency with other platforms (e.g., Linux) as a standard.
 show_help() {
     cat << EOF
@@ -28,22 +28,22 @@ EOF
 
 command=$1
 target=$2
+# Placeholder to be replaced during installation
+SCRIPTSDIR="@SCRIPTSDIR@"
 
 case $command in
     "list")
-        source "/usr/local/share/dots/src/list"
+        source "$SCRIPTSDIR/list"
+        list_configs
         ;;
     "edit")
-        source "/usr/local/share/dots/src/edit" "$target"
+        source "$SCRIPTSDIR/edit" "$target"
         ;;
     "deploy")
-        source "/usr/local/share/dots/src/deploy" "$target"
+        source "$SCRIPTSDIR/deploy" "$target"
         ;;
     "sync")
-        source "/usr/local/share/dots/src/sync" "$target"
-        ;;
-    "help"|"--help"|"-h")
-        show_help
+        source "$SCRIPTSDIR/sync" "$target"
         ;;
     *)
         show_help

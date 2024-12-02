@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/zsh
 
-sync() {
+sync_dotfile_or_config() {
     dots edit "$1"
     dots deploy "$1"
 }
 
-sync "$1"
+sync_dotfile_or_config "$1"

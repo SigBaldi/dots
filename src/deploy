@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-deploy() {
+deploy_dotfile_or_config() {
     local item=$1
     
     # Verify DOTS_BASE_DIR exists and is a git repository
