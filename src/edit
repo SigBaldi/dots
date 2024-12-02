@@ -1,0 +1,36 @@
+#!/bin/zsh
+
+edit_dotfile_or_config() {
+    local item=$1
+
+    # Verify DOTS_BASE_DIR exists and is a git repository
+    if [[ ! -d "$DOTS_BASE_DIR/.git" ]]; then
+        echo "Error: $DOTS_BASE_DIR is not a git repository"
+        exit 1
+    }
+
+    # Get default branch
+    local default_branch=$(git -C "$DOTS_BASE_DIR" symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+
+    # Ensure the latest changes are pulled from the repository
+    git -C "$DOTS_BASE_DIR" pull origin "$default_branch"
+
+    if [[ $item == .* ]]; then
+        # It's a dotfile
+        nvim "$DOTS_BASE_DIR/$item"
+    else
+        # It's a config directory or a file path
+        local dir_path="$DOTS_BASE_DIR/$item"
+        mkdir -p "$dir_path"
+        eza --tree "$dir_path"
+
+        echo "Enter the file path within $item (e.g., plugins/newplugin.ext):"
+        read -r sub_path
+
+        local full_path="$dir_path/$sub_path"
+        mkdir -p "$(dirname "$full_path")"
+        nvim "$full_path"
+    fi
+}
+
+edit_dotfile_or_config "$1"

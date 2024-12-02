@@ -1,0 +1,51 @@
+#!/bin/zsh
+
+# Global config paths
+export DOTS_BASE_DIR="$XDG_DATA_HOME" # Now set as my local repository of sig.baldi/dotfilesAndConfigs
+export DOTS_CONFIG_DIR="$XDG_CONFIG_HOME" # In MacOS, this is not a conventional path, but "~/.config" it's used for consistency with other platforms (e.g., Linux) as a standard.
+show_help() {
+    cat << EOF
+dots - Dotfiles Management Tool
+
+Usage: dots <command> <target>
+
+Commands:
+    list            List available dotfiles and configs
+    edit <target>   Edit a dotfile or config (pulls latest changes first)
+    deploy <target> Install config files and push changes to GitHub
+    sync <target>   Complete workflow: edit and deploy in one go
+    help            Show this help message
+
+Examples:
+    dots list           # List available dotfiles and config directories
+    dots edit .zshrc    # Edit your zsh config
+    dots deploy nvim    # Deploy neovim config changes
+    dots sync kitty     # Edit and deploy kitty config
+
+For more information, visit: https://github.com/SigBaldi/dots
+EOF
+}
+
+command=$1
+target=$2
+
+case $command in
+    "list")
+        source list
+        ;;
+    "edit")
+        source edit "$target"
+        ;;
+    "deploy")
+        source update "$target"
+        ;;
+    "sync")
+        source manage "$target"
+        ;;
+    "help"|"--help"|"-h")
+        show_help
+        ;;
+    *)
+        show_help
+        ;;
+esac

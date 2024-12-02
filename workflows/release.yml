@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Create Release Archive
+        run: |
+          tar czf dots-${GITHUB_REF#refs/tags/}.tar.gz \
+          bin/ src/ completions/ man/ Makefile README.md LICENSE
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dots-*.tar.gz
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

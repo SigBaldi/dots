@@ -1,0 +1,47 @@
+.TH DOTS 1 "2024" "dots dotfiles manager"
+.SH NAME
+dots \- manage dotfiles and configurations with version control
+.SH SYNOPSIS
+.B dots
+[\fICOMMAND\fR] [\fITARGET\fR]
+.SH DESCRIPTION
+.B dots
+is a tool for managing dotfiles and configuration files with automatic version control integration.
+.SH COMMANDS
+.TP
+.BR list
+Display available dotfiles and configuration directories
+.TP
+.BR edit " " \fItarget\fR
+Edit a dotfile or config, pulling latest changes first
+.TP
+.BR deploy " " \fItarget\fR
+Install config files and push changes to Git
+.TP
+.BR sync " " \fItarget\fR
+Complete workflow: edit and deploy in one go
+.TP
+.BR help
+Show help message
+.SH EXAMPLES
+.TP
+dots list
+Show available configurations
+.TP
+dots edit .zshrc
+Edit zsh configuration
+.TP
+dots deploy nvim
+Deploy neovim configuration
+.TP
+dots sync kitty
+Edit and deploy kitty configuration
+.SH ENVIRONMENT
+.TP
+.B DOTS_BASE_DIR
+Base directory for dotfiles repository
+.TP
+.B DOTS_CONFIG_DIR
+System config directory where files are deployed
+.B EDITOR
+Preferred text editor (defaults to vim)

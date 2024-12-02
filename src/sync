@@ -1,0 +1,8 @@
+#!/bin/bash
+
+sync() {
+    dots edit "$1"
+    dots deploy "$1"
+}
+
+sync "$1"

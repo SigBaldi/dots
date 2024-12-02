@@ -1,0 +1,39 @@
+#!/bin/zsh
+
+deploy() {
+    local item=$1
+    
+    # Verify DOTS_BASE_DIR exists and is a git repository
+    if [[ ! -d "$DOTS_BASE_DIR/.git" ]]; then
+        echo "Error: $DOTS_BASE_DIR is not a git repository"
+        exit 1
+    }
+
+    # Get default branch (main or master)
+    local default_branch=$(git -C "$DOTS_BASE_DIR" symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+    
+    # Let user confirm or change target branch
+    echo "Push changes to branch [$default_branch]: "
+    read -r target_branch
+    target_branch=${target_branch:-$default_branch}
+
+    if [[ $item == .* ]]; then
+        # It's a dotfile
+        cp "$DOTS_BASE_DIR/$item" "$DOTS_CONFIG_DIR/"
+    else
+        # It's a config directory or a file path
+        local dir_path="$DOTS_BASE_DIR/$item"
+        mkdir -p "$DOTS_CONFIG_DIR/$item"
+        cp -r "$dir_path/"* "$DOTS_CONFIG_DIR/$item/"
+    fi
+
+    # Use absolute paths for git operations
+    cd "$DOTS_BASE_DIR" || exit
+    git add .
+    git commit -m "Update $item"
+    git push origin "$target_branch"
+
+    source "$DOTS_CONFIG_DIR/$item"
+}
+
+deploy "$1"

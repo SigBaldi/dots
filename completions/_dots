@@ -1,0 +1,30 @@
+#compdef dots
+
+_dots() {
+    local -a commands
+    commands=(
+        'edit:Edit a dotfile or config (pulls latest changes first)'
+        'deploy:Install config files and push changes to GitHub'
+        'sync:Complete workflow: edit and deploy in one go'
+        'help:Show help message'
+    )
+
+    _arguments -C \
+        '1: :->command' \
+        '*: :->args'
+
+    case $state in
+        command)
+            _describe -t commands 'dots commands' commands
+            ;;
+        args)
+            case $words[2] in
+                edit|deploy|sync)
+                    _files -W "$DOTS_BASE_DIR"
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_dots "$@"
