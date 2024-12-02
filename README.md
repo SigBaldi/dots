@@ -49,8 +49,12 @@ brew install dots
 ```
 
 ## Usage
+```bash
 dots list            List available dotfiles and configs
 dots edit <target>   Edit a dotfile or config (pulls latest changes first)
 dots deploy <target> Install config files and push changes to GitHub
 dots sync <target>   Complete workflow: edit and deploy in one go
 dots help            Show this help message
+```
+## Contributing
+Contributions are welcome! Please open an issue or submit a pull request.
