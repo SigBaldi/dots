@@ -29,10 +29,11 @@ On macOS, add these to your .zshrc:
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/[your dotfiles directory]"
 export EDITOR="vim"  # optional: set your preferred editor
+```
 
 ### Optional Enhancements
-eza: Enhanced directory tree views (falls back to standard tree command)
-neovim: Advanced text editing capabilities, lua scripting, and more
+`eza`: Enhanced directory tree views (falls back to standard tree command)
+`neovim`: Advanced text editing capabilities, lua scripting, and more
 
 ## Installation
 From source:
@@ -40,10 +41,12 @@ From source:
 git clone https://github.com/yourusername/dots
 cd dots
 make install
+```
 
 Using Homebrew:
 ```bash
 brew install dots
+```
 
 ## Usage
 dots list            List available dotfiles and configs
