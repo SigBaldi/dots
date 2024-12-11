@@ -10,7 +10,16 @@ class Dots < Formula
   uses_from_macos "zsh"
 
   def install
+    # Perform the substitution
+    inreplace "bin/dots", "@SCRIPTSDIR@", "#{prefix}/src"
+
+    # Install the script
     bin.install "bin/dots"
+
+    # Install other necessary files
+    (prefix/"src").install Dir["src/*"]
+
+    # Install man page and zsh completion
     man1.install "man/dots.1"
     zsh_completion.install "completions/_dots"
   end

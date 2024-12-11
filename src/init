@@ -1,0 +1,177 @@
+#!/bin/zsh
+
+# Source utility functions
+source "$(dirname $0)/utils"
+
+# Initialize default values
+base_dir="${DOTS_BASE_DIR}"
+github_repo=""
+local_repo_name=""
+quick_init=false
+
+# Parse options
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+      "")
+          quick_init=true
+          ;;
+      -b|--bare)
+          base_dir="$2"
+          shift
+          ;;
+      -g|--github)
+          [[ "$quick_init" = false ]] && error "-g cannot be used without -b"
+          github_repo="$2"
+          shift
+          ;;
+      -n|--name)
+          [[ "$quick_init" = true ]] && error "-n cannot be used without -b"
+          local_repo_name="$2"
+          shift
+          ;;
+      *)
+          error "Unknown option: $1"
+          ;;
+  esac
+  shift
+done
+
+# Function to initialize git repository
+init_git_repo() {
+    # Ensure directory exists and is writable
+    check_dir "$1"
+
+    # Ensure we're in the right directory
+    cd "$1" || error "Cannot access directory: $1"
+    
+    # Initialize git repository
+    git init || error "Failed to initialize git repository"
+
+    # Create initial .gitignore
+    cat > .gitignore << EOF
+.DS_Store
+*.log
+*.swp
+*~
+EOF
+    
+    # Initial commit
+    git add .gitignore
+    git commit -m "Initialize dotfiles repository"
+    
+    # Add remote origin if provided, using the main branch
+    if [[ -n "$github_repo" ]]; then
+    local main_branch="git rev-parse --abbrev-ref HEAD"
+    git remote add origin "$github_repo"
+    git push -u origin "$main_branch"
+    fi
+}
+
+# Function to setup new repository location
+setup_repo_location() {
+    base_dir="$1"
+    local_repo_name="$2"
+    
+    # If name provided, create subdirectory
+    if [[ -n "$local_repo_name" ]]; then
+        local full_path="${base_dir}/${local_repo_name}"
+        mkdir -p "$full_path" || error "Failed to create directory: $full_path"
+        echo "$full_path"
+    else
+        echo "$base_dir"
+    fi
+}
+
+# Function to setup repository template
+setup_repo_template() {
+    
+    # Create basic structure
+    mkdir -p "$1/custom"/{aliases,functions,scripts,env}
+    
+    # Create empty files for user customization
+    touch "$1/custom/aliases/custom.zsh"
+    cat > "$1/custom/aliases/custom.zsh" << EOF
+# Add your aliases here
+# Example: alias ls='ls -l'
+EOF
+
+    touch "$1/custom/functions/custom.zsh"
+    cat > "$1/custom/functions/custom.zsh" << EOF
+# Add your functions here
+# Example: function hello() { echo "Hello, $1!" }
+EOF
+
+    touch "$1/custom/scripts/custom.zsh"
+    cat > "$1/custom/scripts/custom.zsh" << EOF
+# Add your scripts here
+# Example: function takeurl() {
+  local data thedir
+  data="$(mktemp)"
+  curl -L "$1" > "$data"
+  tar xf "$data"
+  thedir="$(tar tf "$data" | head -n 1)"
+  rm "$data"
+  cd "$thedir"
+}
+function takegit() {
+  git clone "$1"
+  cd "$(basename ${1%%.git})"
+}
+function take() {
+  if [[ $1 =~ ^(https?|ftp).*\.tar\.(gz|bz2|xz)$ ]]; then
+    takeurl "$1"
+  elif [[ $1 =~ ^([A-Za-z0-9]\+@|https?|git|ssh|ftps?|rsync).*\.git/?$ ]]; then
+    takegit "$1"
+  else
+    takedir "$@"
+  fi
+}
+EOF
+
+    touch "$1/custom/env/custom.zsh"
+    
+    # Simple documentation
+    cat > "$1/README.md" << EOF
+# Shell Configuration
+
+Directory structure:
+shell/
+├── aliases/  # Command shortcuts
+├── functions/  # Shell functions
+├── scripts/  # Utility scripts
+└── env/  # Environment variables
+EOF
+}
+
+# Main initialization logic
+if [[ "$quick_init" = true ]]; then
+    check_dir "$base_dir"
+    debug "Performing quick initialization in $base_dir"
+    
+    if is_git_repo "$base_dir"; then
+        echo "Using existing repository in $base_dir"
+    else
+        init_git_repo "$base_dir"
+    fi
+else
+    # Check if directory path is provided
+    [[ -z "$$1" ]] && error "Directory path is required with -b option"
+
+    # Setup repository location
+    base_dir=$(setup_repo_location)
+
+    # Check if directory exists and is writable
+    check_dir "$base_dir"
+
+    # Ask if user wants to use a template to create repository
+    read -p "Do you want to use a template to create the repository? (y/n) "
+    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    setup_repo_template "$base_dir"
+    fi
+    
+    # Initialize git repository
+    init_git_repo "$base_dir"
+fi
+
+echo "Successfully initialized dotfiles repository in $base_dir"
+

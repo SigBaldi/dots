@@ -1,9 +1,7 @@
-# Define PREFIX and HOMEBREW_CELLAR
-PREFIX ?= $(shell brew --prefix)
-HOMEBREW_CELLAR := $(shell brew --cellar)/dots
-
+# Define PREFIX and MANPREFIX to provide the default installation locations.
+PREFIX ?= /usr/local
 MANPREFIX ?= $(PREFIX)/share/man
-SCRIPTSDIR ?= $(HOMEBREW_CELLAR)/src
+SCRIPTSDIR ?= $(PREFIX)/libexec/dots
 
 install:
 	# Create necessary directories

@@ -36,4 +36,4 @@ deploy_dotfile_or_config() {
     source "$DOTS_CONFIG_DIR/$item"
 }
 
-deploy "$1"
+deploy_dotfile_or_config "$1"

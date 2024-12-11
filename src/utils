@@ -1,0 +1,22 @@
+#!/bin/zsh
+
+debug() {
+    [[ "$DOTS_DEBUG" == true ]] && echo "Debug: $1" >&2
+}
+
+
+error() {
+    echo "Error: $1" >&2
+    exit 1
+}
+
+# Function to check if directory exists and is writable
+check_dir() {
+    [[ ! -d "$1" ]] && error "Directory does not exist: $1"
+    [[ ! -w "$1" ]] && error "No write permission in: $1"
+}
+
+# Function to check if directory is a git repository
+is_git_repo() {
+    git -C "$1" rev-parse --git-dir > /dev/null 2>&1
+}

@@ -3,12 +3,12 @@
 DOTS_DEBUG=false
 DOTS_VERSION="0.1.0"
 
-# Global config paths, uses XDG_DATA_HOME and XDG_CONFIG_HOME if previously set
-export DOTS_BASE_DIR="${XDG_DATA_HOME:-$HOME/.local/share/dots}" # Local repository via XDG_DATA_HOME, defaults to ~/.local/share/dots
-export DOTS_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}"  # Local configs directory via XDG_CONFIG_HOME, defaults to ~/.config
+# Global config paths
+export DOTS_BASE_DIR="$XDG_DATA_HOME"  # Local repository via XDG_DATA_HOME
+export DOTS_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}"  # Default to ~/.config
 
 # Placeholder to be replaced during installation
-SCRIPTSDIR="@SCRIPTSDIR@"
+SCRIPTSDIR="./src"
 
 source "$SCRIPTSDIR/utils"
 
@@ -26,22 +26,22 @@ Global Options:
 Commands:
 
   Management Commands:
-    init [options] <dir>    Initialize a new dotfiles repository, defaults to `~/.local/share/dots`
-    list [options]          List available dotfiles and configs in the repository
-    edit <path>             Edit a dotfile or config (pulls latest changes first)using \$EDITOR
+    init [options] <dir>    Initialize a new dotfiles repository, 
+    list [options]          List available or installed dotfiles and configs
+    edit <path>             Edit a dotfile or config (pulls latest changes first)
     deploy <path>           Install config files and push changes to GitHub
     sync <path>             Complete workflow: edit and deploy in one go
 
     Options for 'init' command:
-        -b, --bare <path>           Specify the path of an existing dotfiles git repository, will set the repository to be managed by dots using \$DOTS_BASE_DIR
-        -g, --github <repo>         Specify the GitHub repository url, must follow the -b flag as the location where it will clone and manage the repository
-        -n, --name <name>           Specify the name of the new repository to initialise and manage, and must follow the -b flag as the location where to create it
+        -y, --yes                   Creates a ./config directory and initializes it as a git repository
+        -d, --directory <path>      Specify the path of an existing dotfiles repository
+        -n, --name <name>           Specify the name of the repository, default is 'dotfiles' and must follow the -d flag
 
     Options for 'list' command:
 
         Display Options:
-            -a, --all                List both available and installed configurations, from your repository and your `~./config` directory
-            -i, --installed          List installed configurations from your `~./config` directory
+            -a, --all                List both available and installed configurations
+            -i, --installed          List installed configurations
 
          Help Options:
            -h, --help                Show this help message
@@ -52,16 +52,12 @@ Commands:
 
 Examples:
 
-  dots init                    Initialize a new dotfiles repository in ~/.local/share/dots
-  dots init -b /path           Sets an existing dotfiles repository to be managed by dots via \$DOTS_BASE_DIR
-  dots init -b /path -g <url>  Clones a GitHub repository to a local directory and set it to be managed by dots via \$DOTS_BASE_DIR
-  dots init -b /path -n <name> Initialize a new repository in the local directory with the specified name: `path/name`
-  dots list                    List available dotfiles and configs in the repository
-  dots list -a                 List both available and installed configurations
-  dots list -i                 List only installed configurations
-  dots edit .zshrc             Edit your zsh config file
-  dots deploy nvim             Deploy all Neovim config changes in its config directory
-  dots sync wezterm            Edit and deploy wezterm config in one go
+  dots init -y               # Initialize a new dotfiles repository in ~/.config
+  dots list                  # List available configurations
+  dots list -i               # List only installed configurations
+  dots edit .zshrc           # Edit your zsh config
+  dots deploy nvim           # Deploy Neovim config changes
+  dots sync kitty            # Edit and deploy Kitty config
 
 For more information, visit: https://github.com/SigBaldi/dots
 EOF
@@ -71,7 +67,7 @@ EOF
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -d|--debug)
-            DOTS_DEBUG=true
+            DEBUG=true
             shift
             ;;
         -h|--help)

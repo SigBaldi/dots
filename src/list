@@ -1,23 +1,105 @@
 #!/bin/zsh
 
-list_configs() {
-    # Verify DOTS_BASE_DIR exists
-    if [[ ! -d "$DOTS_BASE_DIR" ]]; then
-        echo "Error: $DOTS_BASE_DIR not found"
-        exit 1
-    }
-
-    echo "Available configurations:"
-    echo "------------------------"
-    
-    # List dotfiles
-    echo "\nDotfiles:"
-    find "$DOTS_BASE_DIR" -maxdepth 1 -type f -name ".*" -exec basename {} \;
-    
-    # List config directories
-    echo "\nConfig directories:"
-    find "$DOTS_BASE_DIR" -mindepth 1 -maxdepth 1 -type d -not -path '*/\.*' -exec basename {} \;
+LIST_ALL=false
+LIST_INSTALLED=false
+# Error handling function
+error() {
+    echo "Error: $1" >&2
+    exit 1
 }
 
-source "/usr/local/share/dots/src/list"
-list_configs
+# Print section headers
+print_section() {
+    echo "\n${1}:"
+    # Print a line of dashes matching the length of the title plus one
+    printf '%*s\n' $(( ${#1} + 1 )) "" | tr ' ' '-'
+}
+
+# Display usage information
+usage() {
+    echo "Usage: dots list [OPTIONS]"
+    echo
+    echo "Description:"
+    echo "  List available or installed dot configurations."
+    echo
+    echo "Options:"
+    echo
+    echo "  Display Options:"
+    echo "    -a, --all            List both available and installed configurations"
+    echo "    -i, --installed      List installed configurations"
+    echo
+    echo "  Help Options:"
+    echo "    -h, --help           Show this help message"
+}
+
+# Validate environment variables
+[[ -z "$DOTS_BASE_DIR" ]] && error "DOTS_BASE_DIR not set"
+[[ -z "$DOTS_CONFIG_DIR" ]] && error "DOTS_CONFIG_DIR not set"
+
+# Parse command-line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -a|--all)
+            LIST_ALL=true
+            shift
+            ;;
+        -i|--installed)
+            LIST_INSTALLED=true
+            shift
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        -*)
+            error "Unknown option $1"
+            usage
+            exit 1
+            ;;
+        *)
+            break
+    esac
+done
+
+[[ "$DEBUG" == true ]] && set -x
+
+list_configs() {
+    local base_dir="$1"
+
+    # Verify base_dir exists
+    [[ ! -d "$base_dir" ]] && error "Directory '$base_dir' not found"
+
+    # List dotfiles
+    print_section "Dotfiles"
+    find "$base_dir" -maxdepth 1 -type f -name ".*" ! -name "." -print0 | while IFS= read -r -d '' file; do
+        echo "$(basename "$file")"
+    done
+
+    # List config directories
+    print_section "Config directories"
+    find "$base_dir" -mindepth 1 -maxdepth 1 -type d ! -name ".*" -print0 | while IFS= read -r -d '' dir; do
+        echo "$(basename "$dir")"
+    done
+}
+
+print_available_configs() {
+    print_section "Available configurations in '$DOTS_BASE_DIR'"
+    list_configs "$DOTS_BASE_DIR"
+}
+print_installed_configs() {
+    print_section "Configurations installed in '$DOTS_CONFIG_DIR'"
+    list_configs "$DOTS_CONFIG_DIR"
+}
+
+print_all() {
+    print_available_configs
+    print_installed_configs
+}
+
+if [[ "$LIST_ALL" == true ]]; then
+    print_available_configs
+elif [[ "$LIST_INSTALLED" == true ]]; then
+    print_installed_configs
+else
+    print_all
+fi

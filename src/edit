@@ -17,12 +17,12 @@ edit_dotfile_or_config() {
 
     if [[ $item == .* ]]; then
         # It's a dotfile
-        nvim "$DOTS_BASE_DIR/$item"
+        nvim "$DOTS_BASE_DIR/$item" # TODO: use system editor
     else
         # It's a config directory or a file path
         local dir_path="$DOTS_BASE_DIR/$item"
         mkdir -p "$dir_path"
-        eza --tree "$dir_path"
+        find "$dir_path" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 
         echo "Enter the file path within $item (e.g., plugins/newplugin.ext):"
         read -r sub_path
