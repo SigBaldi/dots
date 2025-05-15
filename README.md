@@ -138,12 +138,13 @@ Help Commands:
   version                  Show version information
 
 Examples:
-
-  dots list                  # List available dotfiles and config directories
-  dots list -i               # List only installed configurations
-  dots edit .zshrc           # Edit your zsh config
-  dots deploy nvim           # Deploy Neovim config changes
-  dots sync kitty            # Edit and deploy Kitty config
+  | Command                 | Description |
+  |-------------------------|-------------|
+  | dots list               | List available dotfiles and config directories |
+  | dots list -i            | List only installed configurations |
+  | dots edit .zshrc        | Edit your zsh config |
+  | dots deploy nvim        | Deploy Neovim config changes |
+  | dots sync kitty         | Edit and deploy Kitty config |
 
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request.
